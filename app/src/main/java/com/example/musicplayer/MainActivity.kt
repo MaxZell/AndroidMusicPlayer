@@ -1,12 +1,20 @@
 package com.example.musicplayer
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
-import android.widget.*
-
+import android.util.Log
+import android.widget.Button
+import android.widget.SeekBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private var handler: Handler = Handler()
     private var pause:Boolean = false
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,17 +35,80 @@ class MainActivity : AppCompatActivity() {
         val tvPASS: TextView = findViewById(R.id.tv_pass)
         val tvDUE: TextView = findViewById(R.id.tv_due)
 
+
+//        val resolver: ContentResolver = this.contentResolver
+//        val uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
+//        val sortOrder = "%s ASC".format(MediaStore.Audio.Albums._ID)
+//        val cursor: Cursor? = resolver.query(uri, null, null, null, sortOrder)
+//        val titleColumn: Int? = cursor?.getColumnIndex(MediaStore.Audio.Albums.ALBUM)
+//        if (titleColumn != null) {
+//            var tc =  cursor.getString(titleColumn)
+//            Log.d("Files", "titleColumn: $tc")
+//            cursor.close()
+//        }
+
+
+//        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+//        val projection = arrayOf(
+//            MediaStore.Audio.AudioColumns.DATA,
+//            MediaStore.Audio.AudioColumns.TITLE,
+//            MediaStore.Audio.AudioColumns.ALBUM,
+//            MediaStore.Audio.ArtistColumns.ARTIST
+//        )
+//        val c: Cursor? = super.getContentResolver().query(
+//            uri,
+//            projection,
+//            MediaStore.Audio.Media.DATA + " like ? ",
+//            arrayOf("%utm%"),
+//            null
+//        )
+//        val mypath = c!!.getString(0)
+//        val name = c.getString(1)
+//        val album = c.getString(2)
+//        val artist = c.getString(3)
+//        Log.d("Files1","Name :$name");
+//        Log.d("Files1","Path :$mypath");
+
+//        var path = super.getFilesDir().toString()
+        val path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
+//        path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath.toString().toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
+//        path += "/../.."
+//        path = "/storage/emulated/0/Android/data/package/files/Download"
+        Log.d("Files", "Path: $path")
+        val directory = File(path)
+        val files = directory.listFiles()
+        Log.d("Files", "Size: " + files.size)
+        for (i in files.indices) {
+            Log.d("Files", "FileName:" + files[i].name)
+//            if (files[i].isFile){
+//                Log.d("Files", "FileName:" + files[i].name)
+//            }else if(files[i].isDirectory){
+//                Log.d("Files", "DirName:" + files[i].name)
+//                val childDirectory = File(path + "/" + files[i].name)
+//                Log.d("Files", "childDirectoryName: $childDirectory")
+//                val childFiles = childDirectory.listFiles()
+//                Log.d("Files", "childSize: " + childFiles.size)
+//                for (f in childFiles.indices){
+//                    Log.d("Files", "FileName:" + files[f].name)
+//                }
+//            }
+        }
+
         // Start the media player
         playBtn.setOnClickListener{
             if(pause){
                 mediaPlayer.seekTo(mediaPlayer.currentPosition)
                 mediaPlayer.start()
                 pause = false
-                Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media playing", Toast.LENGTH_SHORT).show()
             }else{
-                mediaPlayer = MediaPlayer.create(applicationContext,R.raw.test)
+                val file = File(super.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "test.mp3")
+//                val path = super.getExternalFilesDir(Environment.DIRECTORY_MUSIC).toString() + "/Music/test.mp3"
+//                var musicPath = super.getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/test.mp3"
+                mediaPlayer = MediaPlayer.create(applicationContext, Uri.fromFile(file))
+//                mediaPlayer = MediaPlayer.create(applicationContext, R.raw.test)
                 mediaPlayer.start()
-                Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media playing", Toast.LENGTH_SHORT).show()
             }
             initializeSeekBar()
             playBtn.isEnabled = false
@@ -47,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 playBtn.isEnabled = true
                 pauseBtn.isEnabled = false
                 stopBtn.isEnabled = false
-                Toast.makeText(this,"end",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "end", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -59,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 playBtn.isEnabled = true
                 pauseBtn.isEnabled = false
                 stopBtn.isEnabled = true
-                Toast.makeText(this,"media pause",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media pause", Toast.LENGTH_SHORT).show()
             }
         }
         // Stop the media player
@@ -77,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 stopBtn.isEnabled = false
                 tvPASS.text = ""
                 tvDUE.text = ""
-                Toast.makeText(this,"media stop",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media stop", Toast.LENGTH_SHORT).show()
             }
         }
         // Seek bar change listener
@@ -95,21 +167,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
-//    direct function, without setOnClickListener
-//    android:onClick="playMusic"
-//    fun playMusic(view: View) {
-//        if(pause){
-//            mediaPlayer.seekTo(mediaPlayer.currentPosition)
-//            mediaPlayer.start()
-//            pause = false
-//            Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
-//        }else{
-//            mediaPlayer = MediaPlayer.create(applicationContext,R.raw.test)
-//            mediaPlayer.start()
-//            Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     // Method to initialize seek bar and audio stats
     @SuppressLint("SetTextI18n")
@@ -132,6 +189,7 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed(runnable, 1000)
     }
 }
+
 // Creating an extension property to get the media player time duration in seconds
 val MediaPlayer.seconds:Int
     get() {
