@@ -1,7 +1,6 @@
 package com.example.musicplayer
 
 import android.annotation.SuppressLint
-import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -36,19 +35,8 @@ class MainActivity : AppCompatActivity() {
         val tvPASS: TextView = findViewById(R.id.tv_pass)
         val tvDUE: TextView = findViewById(R.id.tv_due)
 
-//        val mMediaPlayer = MediaPlayer().apply {
-//            setDataSource(application, Uri.parse("test.mp3"))
-//            setAudioAttributes(AudioAttributes.Builder()
-//                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                .build()
-//            )
-//            prepare()
-//        }
-//        mMediaPlayer.start()
-
 //        var path = super.getFilesDir().toString()
-        var path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
+        val path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
 //        path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath.toString().toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
 //        path += "/../.."
 //        path = "/storage/emulated/0/Android/data/package/files/Download"
@@ -85,19 +73,7 @@ class MainActivity : AppCompatActivity() {
 //                var musicPath = super.getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/test.mp3"
                 mediaPlayer = MediaPlayer.create(applicationContext, Uri.fromFile(file))
 //                mediaPlayer = MediaPlayer.create(applicationContext, R.raw.test)
-//                mediaPlayer.start()
-                val mMediaPlayer = MediaPlayer().apply {
-                    val bla = Uri.parse("test.mp3")
-                    Log.d("Files", "bla: $bla")
-                    setDataSource(applicationContext, Uri.parse("/storage/emulated/0/Android/data/package/files/Download/test.mp3"))
-                    setAudioAttributes(AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build()
-                    )
-                    prepare()
-                }
-                mMediaPlayer.start()
+                mediaPlayer.start()
                 Toast.makeText(this, "media playing", Toast.LENGTH_SHORT).show()
             }
             initializeSeekBar()
