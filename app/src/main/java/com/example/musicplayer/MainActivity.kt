@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.util.Log
-import android.widget.Button
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
@@ -28,37 +25,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val playBtn: Button = findViewById(R.id.playBtn)
-        val pauseBtn: Button = findViewById(R.id.pauseBtn)
-        val stopBtn: Button = findViewById(R.id.stopBtn)
+        val playBtn: ImageView = findViewById(R.id.playBtn)
+        val pauseBtn: ImageView = findViewById(R.id.playBtn)
+        val stopBtn: ImageView = findViewById(R.id.playBtn)
         val seekBAR: SeekBar = findViewById(R.id.seek_bar)
         val tvPASS: TextView = findViewById(R.id.tv_pass)
         val tvDUE: TextView = findViewById(R.id.tv_due)
-
-//        var path = super.getFilesDir().toString()
-        val path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
-//        path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath.toString().toString() // /storage/emulated/0/Android/data/com.example.musicplayer/files/Download
-//        path += "/../.."
-//        path = "/storage/emulated/0/Android/data/package/files/Download"
-        Log.d("Files", "Path: $path")
-        val directory = File(path)
-        val files = directory.listFiles()
-        Log.d("Files", "Size: " + files.size)
-        for (i in files.indices) {
-            Log.d("Files", "FileName:" + files[i].name)
-//            if (files[i].isFile){
-//                Log.d("Files", "FileName:" + files[i].name)
-//            }else if(files[i].isDirectory){
-//                Log.d("Files", "DirName:" + files[i].name)
-//                val childDirectory = File(path + "/" + files[i].name)
-//                Log.d("Files", "childDirectoryName: $childDirectory")
-//                val childFiles = childDirectory.listFiles()
-//                Log.d("Files", "childSize: " + childFiles.size)
-//                for (f in childFiles.indices){
-//                    Log.d("Files", "FileName:" + files[f].name)
-//                }
-//            }
-        }
 
         // Start the media player
         playBtn.setOnClickListener{
@@ -68,11 +40,6 @@ class MainActivity : AppCompatActivity() {
                 pause = false
                 Toast.makeText(this, "media playing", Toast.LENGTH_SHORT).show()
             }else{
-                val file = File(super.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "test.mp3")
-//                val path = super.getExternalFilesDir(Environment.DIRECTORY_MUSIC).toString() + "/Music/test.mp3"
-//                var musicPath = super.getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/test.mp3"
-                mediaPlayer = MediaPlayer.create(applicationContext, Uri.fromFile(file))
-//                mediaPlayer = MediaPlayer.create(applicationContext, R.raw.test)
                 mediaPlayer.start()
                 Toast.makeText(this, "media playing", Toast.LENGTH_SHORT).show()
             }
@@ -100,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "media pause", Toast.LENGTH_SHORT).show()
             }
         }
+
         // Stop the media player
         stopBtn.setOnClickListener{
             if(mediaPlayer.isPlaying || pause){
